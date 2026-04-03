@@ -1,8 +1,28 @@
 import { spawn } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 import type { RunResult } from './types.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+function resolvePlaywrightBin(): string {
+  const candidates = [
+    // pnpm hoisted location (most common in this monorepo)
+    join(__dirname, '../../../node_modules/.pnpm/node_modules/.bin/playwright'),
+    // local node_modules
+    join(__dirname, '../../node_modules/.bin/playwright'),
+    // standard npm install
+    join(__dirname, '../../../node_modules/.bin/playwright'),
+  ];
+  for (const c of candidates) {
+    if (existsSync(c)) return c;
+  }
+  // Fall back — let PATH resolve it
+  return 'playwright';
+}
 
 interface PlaywrightJsonReport {
   suites?: PlaywrightSuite[];
@@ -53,11 +73,16 @@ export async function executeTests(
     `--trace=on`,
   ];
 
+  // Use the directory of the first spec file as the playwright root
+  // so that Playwright can find the test files relative to its rootDir
+  const specDir = dirname(specFiles[0] ?? process.cwd());
+
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     PLAYWRIGHT_HTML_REPORT: join(outputDir, 'html'),
     BASE_URL: targetUrl,
     CI: 'true',
+    PLAYWRIGHT_ROOT: specDir,
   };
 
   const stdout = await runPlaywright(args, env, reportPath);
@@ -74,19 +99,21 @@ function runPlaywright(
     let stdoutData = '';
     let stderrData = '';
 
-    // Try to find playwright binary
-    const playwrightBin = 'npx';
-    const fullArgs = ['playwright', 'test', ...args];
+    // Resolve playwright binary: prefer local node_modules, fall back to PATH
+    const playwrightBin = resolvePlaywrightBin();
+    const fullArgs = ['test', ...args];
 
     const child = spawn(playwrightBin, fullArgs, {
       env,
-      shell: true,
+      shell: false,
+      cwd: env['PLAYWRIGHT_ROOT'] ?? process.cwd(),
     });
 
     child.stdout?.on('data', (chunk: Buffer) => {
       stdoutData += chunk.toString();
     });
 
+    // Playwright JSON reporter writes to stderr by default
     child.stderr?.on('data', (chunk: Buffer) => {
       stderrData += chunk.toString();
     });
@@ -101,7 +128,8 @@ function runPlaywright(
         );
         return;
       }
-      resolve(stdoutData);
+      // JSON reporter outputs to stderr; merge both for parsing
+      resolve(stderrData || stdoutData);
     });
 
     child.on('error', (err) => {
