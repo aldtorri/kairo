@@ -4,7 +4,7 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
-COPY pnpm-workspace.yaml package.json tsconfig.json ./
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml tsconfig.json ./
 COPY apps/dashboard/package.json ./apps/dashboard/
 
 RUN pnpm install --frozen-lockfile
