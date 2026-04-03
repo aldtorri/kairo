@@ -1,0 +1,20 @@
+{
+  "name": "@kairo/test",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kairo/analyzer": "workspace:*",
+    "@kairo/classifier": "workspace:*",
+    "@kairo/fixer": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "@types/node": "^22.5.0"
+  }
+}

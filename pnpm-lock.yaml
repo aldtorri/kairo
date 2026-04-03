@@ -10,6 +10,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@kairo/classifier':
+        specifier: workspace:*
+        version: link:../../packages/classifier
+      '@kairo/fixer':
+        specifier: workspace:*
+        version: link:../../packages/fixer
       '@kairo/mcp':
         specifier: workspace:*
         version: link:../../packages/mcp
@@ -197,6 +203,28 @@ importers:
       zod:
         specifier: ^3.23.8
         version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.5.0
+        version: 22.19.15
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.5
+        version: 2.1.9(@types/node@22.19.15)
+
+  test:
+    dependencies:
+      '@kairo/analyzer':
+        specifier: workspace:*
+        version: link:../packages/analyzer
+      '@kairo/classifier':
+        specifier: workspace:*
+        version: link:../packages/classifier
+      '@kairo/fixer':
+        specifier: workspace:*
+        version: link:../packages/fixer
     devDependencies:
       '@types/node':
         specifier: ^22.5.0

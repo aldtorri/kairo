@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dashboard",
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["/Users/aldotorrijos/Desktop/KairoCC/apps/dashboard/node_modules/vite/bin/vite.js"],
+      "cwd": "/Users/aldotorrijos/Desktop/KairoCC/apps/dashboard",
+      "port": 5173
+    }
+  ]
+}

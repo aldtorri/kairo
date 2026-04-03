@@ -1,0 +1,4 @@
+apps/dashboard
+test
+*.md
+.github
