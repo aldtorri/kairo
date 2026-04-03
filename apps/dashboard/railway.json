@@ -5,7 +5,7 @@
     "dockerfilePath": "apps/dashboard/Dockerfile"
   },
   "deploy": {
-    "startCommand": "nginx -g 'daemon off;'",
+    "startCommand": "/docker-entrypoint.sh",
     "healthcheckPath": "/",
     "healthcheckTimeout": 30
   }

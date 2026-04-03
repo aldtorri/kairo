@@ -22,4 +22,9 @@ FROM nginx:alpine
 COPY --from=builder /app/apps/dashboard/dist /usr/share/nginx/html
 COPY apps/dashboard/nginx.conf /etc/nginx/conf.d/default.conf
 
+COPY apps/dashboard/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
 EXPOSE 80
+
+CMD ["/docker-entrypoint.sh"]
