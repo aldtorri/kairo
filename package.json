@@ -9,5 +9,12 @@
     "test": "pnpm -r test",
     "lint": "pnpm -r lint"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@heroui/shared-utils",
+      "better-sqlite3",
+      "esbuild"
+    ]
+  }
 }
