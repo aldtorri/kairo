@@ -14,7 +14,7 @@ import { ClassifyInputSchema, handleClassifyFailures } from './tools/classify.js
 import { FixInputSchema, handleGetFixes } from './tools/fix.js';
 
 export { runLoop } from './loop.js';
-export type { LoopOptions, LoopResult } from './loop.js';
+export type { LoopOptions, LoopResult, IterationResult } from './loop.js';
 
 const server = new Server(
   { name: 'kairo', version: '0.1.0' },
