@@ -7,7 +7,7 @@ import { buildSecurityPrompt } from './prompts/security.js';
 import { callOpenAI } from './openai-caller.js';
 import type { GeneratorInput, GeneratedTest } from './types.js';
 
-export type { GeneratorInput, GeneratedTest } from './types.js';
+export type { GeneratorInput, GeneratedTest, AnalyzerSnapshot } from './types.js';
 
 export async function generateTests(
   input: GeneratorInput
