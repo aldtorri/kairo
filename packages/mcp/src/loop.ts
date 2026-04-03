@@ -55,6 +55,12 @@ export async function runLoop(options: LoopOptions): Promise<LoopResult> {
     .map((t) => t.filePath)
     .filter((p): p is string => p !== undefined);
 
+  // Map from basename to full path so we can resolve relative names from Playwright reports
+  const fileNameToFullPath = new Map<string, string>();
+  for (const f of specFiles) {
+    fileNameToFullPath.set(f.split('/').pop() ?? f, f);
+  }
+
   const iterations: IterationResult[] = [];
   let currentSpecFiles = specFiles;
 
@@ -110,9 +116,15 @@ export async function runLoop(options: LoopOptions): Promise<LoopResult> {
       };
     }
 
-    // Prepare for next iteration: only re-run files with actionable failures
+    // Prepare for next iteration: only re-run files with actionable failures.
+    // Resolve relative names (e.g. "backend.spec.ts") back to full paths.
     currentSpecFiles = [
-      ...new Set(actionableFailures.map((f) => f.file)),
+      ...new Set(
+        actionableFailures.map((f) => {
+          const basename = f.file.split('/').pop() ?? f.file;
+          return fileNameToFullPath.get(basename) ?? fileNameToFullPath.get(f.file) ?? f.file;
+        })
+      ),
     ];
 
     // Max iterations reached

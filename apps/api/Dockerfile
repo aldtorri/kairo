@@ -21,6 +21,9 @@ COPY apps/api/package.json ./apps/api/
 # Install all deps
 RUN pnpm install --frozen-lockfile
 
+# Install Playwright browser binaries (chromium only to keep image lean)
+RUN npx playwright install --with-deps chromium
+
 # Copy source
 COPY packages/ ./packages/
 COPY apps/api/ ./apps/api/
